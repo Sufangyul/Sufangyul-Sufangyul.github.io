@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row g-2">
+            <div class="col-12">
+                <h3>請輸入商品JSON資料</h3>
+                <div class="data-input-block">
+                    <form class="bg-primary text-dark bg-opacity-50 rounded">
+                        <div class="mb-2"> 
+                            <textarea class="form-control" id = "product_json_value" rows="10" required></textarea>     
+                        </div>
+                        <div class="col-12">
+                            <button id="save_cookie_btn" type="button" class="btn btn-success">儲存</button>
+                            <button id="delete_cookie_btn" type="button" class="btn btn-danger">刪除</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-12">
+                <button id="create_btn" type="button" class="btn btn-primary">從Cookie生成卡片</button>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="cards-block">
+                    <div class="bg-sucess text-dark bg-opacity-50 rounded">
+                        <div class="row g-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <!-- js-cookie -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+
+
+    <script>
+        const productListKey = 'product_data';
+
+        const saveBtn = document.querySelector('#save_cookie_btn')
+        const createCookieBtn = document.querySelector('#create_btn')
+        const deleteCookieBtn = document.querySelector('#delete_cookie_btn')
+        
+        const productJsonValue = document.querySelector('#product_json_value')
+
+        const cardRenderScope = document.querySelector('.cards-block .row');
+
+        function saveProductData() {
+            Cookies.set('product_data', productJsonValue.value)
+            alert("新增成功")
+            window.location.reload();
+        }
+
+        function deleteProductData() {
+            Cookies.remove('product_data')
+            alert('刪除成功');
+            window.location.reload();
+        }
+
+        function createCardsByJson(jsonStr) {
+
+            let dataArray = JSON.parse(Cookies.get('product_data'));
+
+            cardRenderScope.innerHTML = '';
+
+            dataArray.forEach (el => {
+                cardRenderScope.innerHTML +=
+                    `
+                    <div class="col-12 col-md-3">
+                    <div class="card">
+                        <img alt="" src="${el.imgUrl}" class="card-img-top">
+                        <div class="card-body">
+                        <h5 class="card-title">${el.name}</h5>
+                        <p class="card-text">${el.content}</p>
+                        </div>
+                    </div>
+                    </div>
+                    `;
+            });
+        }
+
+        saveBtn.onclick = saveProductData
+        deleteCookieBtn.onclick = deleteProductData
+
+        createCookieBtn.addEventListener('click', function() {
+
+            Cookies.get(productListKey)
+
+            createCardsByJson()
+
+
+        });
+
+
+    </script>
+    
+</body>
+</html>
